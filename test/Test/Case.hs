@@ -21,6 +21,7 @@ module Test.Case (
 
 import Control.Lens.Compat
 import Control.Monad
+import Data.Functor.Identity
 import Test.QuickCheck.Monadic
 import Test.Tasty
 import Test.Tasty.QuickCheck
@@ -40,7 +41,7 @@ data TestCase
         { description :: TestName
         , testData    :: Gen (s, Environment)
         , testCase    :: PropertyM (Vgrep s) a
-        , invariant   :: Getter s r }
+        , invariant   :: SimpleGetter s r }
 
 
 runTestCase :: TestCase -> TestTree
@@ -101,8 +102,8 @@ testPropertyVgrep name prop = testProperty name (monadicVgrep prop)
 infix 4 ~~
 (~~)
     :: (Eq a, Show a)
-    => Getter s a
-    -> Getter s a
+    => SimpleGetter s a
+    -> SimpleGetter s a
     -> PropertyM (Vgrep s) Property
 prop1 ~~ prop2 = do
     p1 <- use prop1

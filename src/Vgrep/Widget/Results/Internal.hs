@@ -24,7 +24,7 @@ module Vgrep.Widget.Results.Internal (
     ) where
 
 import           Control.Applicative
-import           Control.Lens.Compat (Getter, pre, to, view, _Just)
+import           Control.Lens.Compat
 import           Data.Foldable
 import           Data.Function
 import           Data.IntMap.Strict  (IntMap)
@@ -197,14 +197,14 @@ displayLineNumber = \case
 
 
 -- | The file name of the currently selected item
-currentFileName :: Getter Results (Maybe Text)
+currentFileName :: SimpleGetter Results (Maybe Text)
 currentFileName =
-    pre (to current . _Just . file . fileName)
+    to (preview (to current . _Just . file . fileName))
 
 -- | The line number of the currently selected item
-currentLineNumber :: Getter Results (Maybe Int)
+currentLineNumber :: SimpleGetter Results (Maybe Int)
 currentLineNumber =
-    pre (to current . _Just . lineReference . lineNumber . _Just)
+    to (preview (to current . _Just . lineReference . lineNumber . _Just))
 
 current :: Results -> Maybe FileLineReference
 current = \case
@@ -213,7 +213,7 @@ current = \case
 
 -- | The line numbers with matches in the file of the currentliy selected
 -- item
-currentFileResults :: Getter Results (IntMap AnsiFormatted)
+currentFileResults :: SimpleGetter Results (IntMap AnsiFormatted)
 currentFileResults =
     to (Map.fromList . lineReferencesInCurrentFile)
   where

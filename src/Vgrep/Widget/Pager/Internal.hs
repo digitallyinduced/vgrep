@@ -40,5 +40,5 @@ data Pager = Pager
 makeLenses ''Pager
 
 -- | The number of invisible lines above the screen
-position :: Getter Pager Int
+position :: SimpleGetter Pager Int
 position = above . to length

@@ -2,7 +2,7 @@
 {-# LANGUAGE LambdaCase       #-}
 module Test.Vgrep.Widget.Results (test) where
 
-import           Control.Lens.Compat     (Getter, over, to, view, _1)
+import           Control.Lens.Compat     (SimpleGetter, over, to, view, _1)
 import           Control.Monad           (void)
 import           Data.Map.Strict         ((!))
 import qualified Data.Map.Strict         as Map
@@ -69,7 +69,7 @@ test = runTestCases "Results widget"
         }
     ]
 
-selectedLine :: Getter Results (Maybe FileLineReference)
+selectedLine :: SimpleGetter Results (Maybe FileLineReference)
 selectedLine = to $ \case
     EmptyResults      -> Nothing
     Results _ _ c _ _ -> Just c
@@ -94,7 +94,7 @@ lastLine (results, _env) = case results of
     EmptyResults        -> True
     Results _ _ _ ds es -> null ds && null es
 
-resultsAsList :: Getter Results (Seq FileLineReference)
+resultsAsList :: SimpleGetter Results (Seq FileLineReference)
 resultsAsList = to $ \case
     EmptyResults -> mempty
     Results as bs c ds es -> mconcat
