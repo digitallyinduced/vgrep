@@ -1,16 +1,34 @@
 {-# LANGUAGE RankNTypes #-}
+{-# OPTIONS_GHC -fno-warn-dodgy-imports #-}
 module Control.Lens.Compat
   ( pre
+  , assign
+  , modifying
+  , traverseOf
 
   , module Lens.Micro.Platform
   ) where
 
 import Data.Monoid         (First)
-import Lens.Micro.Platform
+import Lens.Micro.Platform hiding (assign, modifying, traverseOf)
+import Control.Monad.State (MonadState, modify)
 
 
 pre :: Getting (First a) s a -> SimpleGetter s (Maybe a)
 pre l = to (preview l)
+{-# INLINE pre #-}
+
+assign :: MonadState s m => ASetter s s a b -> b -> m ()
+assign l b = modify (set l b)
+{-# INLINE assign #-}
+
+modifying :: MonadState s m => ASetter s s a b -> (a -> b) -> m ()
+modifying l f = modify (over l f)
+{-# INLINE modifying #-}
+
+traverseOf :: a -> a
+traverseOf = id
+{-# INLINE traverseOf #-}
 
 -- | Build an (index-preserving) 'Getter' from an arbitrary Haskell function.
 -- See "Control.Lens".'Lens.to' for details.
